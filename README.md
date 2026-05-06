@@ -1,3 +1,10 @@
+
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![Machine Learning](https://img.shields.io/badge/ML-RandomForest-green)
+![Status](https://img.shields.io/badge/Status-Backtested-orange)
+![Purpose](https://img.shields.io/badge/Purpose-Portfolio-purple)
+
+
 # Data Setup
 
 This project requires data files separately from OneDrive.
@@ -80,3 +87,12 @@ Settings:
 - Brokerage/transaction cost simulation
 - Backtest optimization
 - GitHub-ready project structure
+
+
+## Screenshots
+
+### Backtest Result
+![Backtest Result](results/backtest_result.png)
+
+### Optimization Chart
+![Optimization Chart](results/backtest_profit_chart.png)
