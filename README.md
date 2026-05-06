@@ -66,3 +66,17 @@ Settings:
 - Target Profit: 0.70%
 - Hold Candles: 30
 - Brokerage: 0.005%
+
+
+
+## Features
+
+- Historical market data processing
+- Technical indicator based feature engineering
+- VWAP, ATR, RSI, Moving Averages, Volume Spike
+- Random Forest ML model
+- Confidence based trade filtering
+- Stop loss and target profit logic
+- Brokerage/transaction cost simulation
+- Backtest optimization
+- GitHub-ready project structure
