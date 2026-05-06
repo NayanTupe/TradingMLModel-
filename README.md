@@ -29,3 +29,40 @@ Download the data folder and paste it in the project root.
 
 
 Backtest achieved +488.86 net profit on test sample using confidence filtering, stop loss, target profit, and brokerage simulation.
+
+
+## Latest Backtest Result
+
+Initial Balance: 100000  
+Final Balance: 100488.86  
+Net Profit: +488.86  
+Total Trades: 11  
+Win Rate: 36.36%  
+Average Net Profit Per Trade: 44.44  
+
+Settings:
+- Confidence Threshold: 0.60
+- Stop Loss: 0.20%
+- Target: 0.50%
+- Capital Per Trade: 100000
+- Brokerage: 0.005%
+- Hold Candles: 30
+
+
+
+
+## Optimized Backtest Result ACCURCY INCREASE WIN INCREASE
+
+Initial Balance: 100000  
+Final Balance: 103368.98  
+Total Net Profit: +3368.98  
+Total Trades: 14  
+Win Rate: 57.14%  
+Average Net Profit Per Trade: +240.64  
+
+Settings:
+- Confidence Threshold: 0.58
+- Stop Loss: 0.25%
+- Target Profit: 0.70%
+- Hold Candles: 30
+- Brokerage: 0.005%

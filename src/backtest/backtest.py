@@ -99,10 +99,10 @@ print(
 initial_balance = 100000
 balance = initial_balance
 
-confidence_threshold = 0.60
+confidence_threshold = 0.58
 
-stop_loss_pct = 0.002       # 0.20%
-target_pct = 0.005          # 0.50%
+stop_loss_pct = 0.0025     # 0.25%
+target_pct = 0.007         # 0.70%
 
 capital_per_trade = 100000  # ₹1,00,000 per trade
 brokerage_pct = 0.00005     # 0.005% approximate
