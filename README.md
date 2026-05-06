@@ -25,3 +25,7 @@ Trading-System/
 
 Data is stored in OneDrive Nunnurider account.
 Download the data folder and paste it in the project root.
+
+
+
+Backtest achieved +488.86 net profit on test sample using confidence filtering, stop loss, target profit, and brokerage simulation.
