@@ -96,3 +96,24 @@ Settings:
 
 ### Optimization Chart
 ![Optimization Chart](results/backtest_profit_chart.png)
+
+
+## Validation & Analysis
+
+### Walk-Forward Validation
+- Total Folds Tested: 102
+- Total Trades: 18,411
+- Average Win Rate: 68.2%
+
+### Risk & Quality Checks
+- Leakage check completed
+- No duplicate rows
+- No infinite values
+- No NaN values
+- No high-correlation leakage features detected
+
+### Analysis Tools
+- Walk-forward testing
+- Leakage analysis
+- Bad fold analysis
+- Backtest optimization
