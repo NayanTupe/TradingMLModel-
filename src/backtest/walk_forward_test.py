@@ -57,8 +57,8 @@ brokerage_pct = 0.00005
 hold_candles = 30
 
 train_window = 30000
-test_window = 5000
-step_size = 5000
+test_window = 10000
+step_size = 50000
 
 results = []
 
@@ -207,4 +207,4 @@ print("Average Profit Per Fold:", round(results_df['total_profit'].mean(), 2))
 
 results_df.to_csv('data/processed/walk_forward_results.csv', index=False)
 
-print("\n✅ Saved to data/processed/walk_forward_results.csv")
+print("\n✅ Saved to data/processed/walk_forward_results.csv")  
