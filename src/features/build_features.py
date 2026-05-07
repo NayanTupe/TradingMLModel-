@@ -7,7 +7,7 @@ import numpy as np
 df = pd.read_csv('data/processed/combined_data.csv')
 
 df['date'] = pd.to_datetime(df['date'])
-df = df.sort_values(by=['stock', 'date'])
+df = df.sort_values(by=['stock', 'date']).reset_index(drop=True)
 
 # ======================
 # BASIC FEATURES
@@ -17,10 +17,14 @@ df['ma_20'] = df.groupby('stock')['close'].transform(lambda x: x.rolling(20).mea
 
 def calculate_rsi(series, window=14):
     delta = series.diff()
+
     gain = delta.where(delta > 0, 0).rolling(window).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window).mean()
+
     rs = gain / loss
-    return 100 - (100 / (1 + rs))
+    rsi = 100 - (100 / (1 + rs))
+
+    return rsi
 
 df['rsi'] = df.groupby('stock')['close'].transform(calculate_rsi)
 
@@ -34,10 +38,10 @@ df['momentum'] = df['close'] - df['ma_10']
 df['typical_price'] = (df['high'] + df['low'] + df['close']) / 3
 df['tp_volume'] = df['typical_price'] * df['volume']
 
-df['vwap'] = (
-    df.groupby('stock')['tp_volume'].cumsum() /
-    df.groupby('stock')['volume'].cumsum()
-)
+df['cumulative_tp_volume'] = df.groupby('stock')['tp_volume'].cumsum()
+df['cumulative_volume'] = df.groupby('stock')['volume'].cumsum()
+
+df['vwap'] = df['cumulative_tp_volume'] / df['cumulative_volume']
 
 # ======================
 # ATR
@@ -66,13 +70,22 @@ df['volume_spike'] = df['volume'] / df['volume_ma_20']
 # ======================
 # CANDLE BODY %
 # ======================
-df['candle_body_pct'] = abs(df['close'] - df['open']) / (df['high'] - df['low'])
-df['candle_body_pct'] = df['candle_body_pct'].replace([np.inf, -np.inf], 0)
+df['candle_range'] = df['high'] - df['low']
+
+df['candle_body_pct'] = np.where(
+    df['candle_range'] != 0,
+    abs(df['close'] - df['open']) / df['candle_range'],
+    0
+)
 
 # ======================
 # TREND STRENGTH
 # ======================
-df['trend_strength'] = (df['ma_10'] - df['ma_20']) / df['close']
+df['trend_strength'] = np.where(
+    df['close'] != 0,
+    (df['ma_10'] - df['ma_20']) / df['close'],
+    0
+)
 
 # ======================
 # PREVIOUS DAY HIGH / LOW
@@ -93,8 +106,17 @@ df = df.merge(
     how='left'
 )
 
-df['near_prev_day_high'] = (df['close'] - df['prev_day_high']) / df['close']
-df['near_prev_day_low'] = (df['close'] - df['prev_day_low']) / df['close']
+df['near_prev_day_high'] = np.where(
+    df['close'] != 0,
+    (df['close'] - df['prev_day_high']) / df['close'],
+    0
+)
+
+df['near_prev_day_low'] = np.where(
+    df['close'] != 0,
+    (df['close'] - df['prev_day_low']) / df['close'],
+    0
+)
 
 # ======================
 # OPENING RANGE BREAKOUT
@@ -123,10 +145,21 @@ df['target'] = (
 ).astype(int)
 
 # ======================
-# CLEAN
+# FINAL CLEAN
 # ======================
-df = df.dropna()
+df = df.replace([np.inf, -np.inf], 0)
+df = df.fillna(0)
 
+# Optional: remove helper columns if you want cleaner features.csv
+df = df.drop(columns=[
+    'cumulative_tp_volume',
+    'cumulative_volume',
+    'candle_range'
+], errors='ignore')
+
+# ======================
+# SAVE
+# ======================
 df.to_csv('data/processed/features.csv', index=False)
 
 print("✅ Features created with advanced free indicators")
