@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from itertools import product
 
@@ -6,14 +7,26 @@ from itertools import product
 # LOAD DATA
 # ======================
 df = pd.read_csv('data/processed/features.csv')
-df = df.tail(50000)
 
+# Use recent market data only
+df = df.tail(100000).reset_index(drop=True)
+
+# Clean invalid values
+df = df.replace([np.inf, -np.inf], 0)
+df = df.fillna(0)
+
+# ======================
+# REMOVE LEAKAGE
+# ======================
 leakage_cols = ['future_close', 'future_high', 'future_low']
 
 for col in leakage_cols:
     if col in df.columns:
         df = df.drop(columns=[col])
 
+# ======================
+# FEATURES
+# ======================
 features = [
     'ma_10',
     'ma_20',
@@ -29,12 +42,20 @@ features = [
     'near_prev_day_high',
     'near_prev_day_low',
     'orb_breakout',
-    'orb_breakdown'
+    'orb_breakdown',
+    'atr_pct',
+    'above_vwap',
+    'high_volume',
+    'uptrend',
+    'market_regime'
 ]
 
 X = df[features]
 y = df['target']
 
+# ======================
+# SPLIT
+# ======================
 split_index = int(len(df) * 0.8)
 
 X_train = X.iloc[:split_index]
@@ -58,13 +79,23 @@ model = RandomForestClassifier(
 
 model.fit(X_train, y_train)
 
+# ======================
+# PREDICTION
+# ======================
 proba = model.predict_proba(X_test)
+
 df_test['confidence'] = proba[:, 1]
 
 # ======================
 # BACKTEST FUNCTION
 # ======================
-def run_backtest(confidence_threshold, stop_loss_pct, target_pct, hold_candles):
+def run_backtest(
+    confidence_threshold,
+    stop_loss_pct,
+    target_pct,
+    hold_candles
+):
+
     initial_balance = 100000
     balance = initial_balance
 
@@ -74,42 +105,68 @@ def run_backtest(confidence_threshold, stop_loss_pct, target_pct, hold_candles):
     trades = []
 
     for i in range(len(df_test) - hold_candles):
+
         row = df_test.iloc[i]
 
-        if row['confidence'] >= confidence_threshold:
+        # ======================
+        # MARKET REGIME FILTER
+        # ======================
+        if (
+            row['confidence'] >= confidence_threshold and
+            row['market_regime'] == 1
+        ):
+
             entry_price = row['close']
+
             quantity = int(capital_per_trade / entry_price)
 
             if quantity <= 0:
                 continue
 
             stop_loss_price = entry_price * (1 - stop_loss_pct)
+
             target_price = entry_price * (1 + target_pct)
 
             exit_price = None
             exit_reason = "time_exit"
 
-            future_rows = df_test.iloc[i + 1:i + hold_candles + 1]
+            future_rows = df_test.iloc[
+                i + 1:i + hold_candles + 1
+            ]
 
             for _, future in future_rows.iterrows():
+
+                # Stop loss
                 if future['low'] <= stop_loss_price:
                     exit_price = stop_loss_price
                     exit_reason = "stop_loss"
                     break
 
+                # Target
                 if future['high'] >= target_price:
                     exit_price = target_price
                     exit_reason = "target"
                     break
 
+            # Time exit
             if exit_price is None:
-                exit_price = df_test.iloc[i + hold_candles]['close']
+                exit_price = df_test.iloc[
+                    i + hold_candles
+                ]['close']
 
+            # ======================
+            # PNL
+            # ======================
             buy_value = entry_price * quantity
             sell_value = exit_price * quantity
 
             gross_profit = sell_value - buy_value
-            brokerage = (buy_value + sell_value) * brokerage_pct
+
+            brokerage = (
+                (buy_value + sell_value) *
+                brokerage_pct
+            )
+
             net_profit = gross_profit - brokerage
 
             balance += net_profit
@@ -119,22 +176,68 @@ def run_backtest(confidence_threshold, stop_loss_pct, target_pct, hold_candles):
                 "exit_reason": exit_reason
             })
 
+    # ======================
+    # HANDLE NO TRADE CASE
+    # ======================
     total_trades = len(trades)
 
     if total_trades == 0:
-        return None
+        return {
+            "confidence": confidence_threshold,
+            "stop_loss_pct": stop_loss_pct,
+            "target_pct": target_pct,
+            "hold_candles": hold_candles,
+            "final_balance": initial_balance,
+            "total_profit": 0,
+            "total_trades": 0,
+            "wins": 0,
+            "losses": 0,
+            "win_rate": 0,
+            "avg_profit": 0,
+            "target_hits": 0,
+            "stop_losses": 0
+        }
 
+    # ======================
+    # STATS
+    # ======================
     trades_df = pd.DataFrame(trades)
 
-    wins = len(trades_df[trades_df['net_profit'] > 0])
-    losses = len(trades_df[trades_df['net_profit'] <= 0])
+    wins = len(
+        trades_df[
+            trades_df['net_profit'] > 0
+        ]
+    )
 
-    win_rate = (wins / total_trades) * 100
-    total_profit = trades_df['net_profit'].sum()
-    avg_profit = trades_df['net_profit'].mean()
+    losses = len(
+        trades_df[
+            trades_df['net_profit'] <= 0
+        ]
+    )
 
-    target_hits = len(trades_df[trades_df['exit_reason'] == 'target'])
-    stop_losses = len(trades_df[trades_df['exit_reason'] == 'stop_loss'])
+    win_rate = (
+        wins / total_trades
+    ) * 100
+
+    total_profit = trades_df[
+        'net_profit'
+    ].sum()
+
+    avg_profit = trades_df[
+        'net_profit'
+    ].mean()
+
+    target_hits = len(
+        trades_df[
+            trades_df['exit_reason'] == 'target'
+        ]
+    )
+
+    stop_losses = len(
+        trades_df[
+            trades_df['exit_reason'] == 'stop_loss'
+        ]
+    )
 
     return {
         "confidence": confidence_threshold,
@@ -155,23 +258,57 @@ def run_backtest(confidence_threshold, stop_loss_pct, target_pct, hold_candles):
 # ======================
 # PARAMETER GRID
 # ======================
-confidence_values = [0.55, 0.58, 0.60, 0.62]
-stop_loss_values = [0.0015, 0.002, 0.0025]
-target_values = [0.003, 0.005, 0.007]
-hold_values = [15, 30, 45]
+confidence_values = [
+    0.45,
+    0.50,
+    0.55
+]
+
+stop_loss_values = [
+    0.0015,
+    0.002,
+    0.0025
+]
+
+target_values = [
+    0.003,
+    0.005,
+    0.007
+]
+
+hold_values = [
+    15,
+    30,
+    45
+]
 
 results = []
 
+# ======================
+# OPTIMIZATION LOOP
+# ======================
 for confidence, stop_loss, target, hold in product(
     confidence_values,
     stop_loss_values,
     target_values,
     hold_values
 ):
-    result = run_backtest(confidence, stop_loss, target, hold)
 
-    if result:
-        results.append(result)
+    print(
+        f"Running -> Conf:{confidence} "
+        f"SL:{stop_loss} "
+        f"Target:{target} "
+        f"Hold:{hold}"
+    )
+
+    result = run_backtest(
+        confidence,
+        stop_loss,
+        target,
+        hold
+    )
+
+    results.append(result)
 
 # ======================
 # RESULTS
@@ -179,14 +316,27 @@ for confidence, stop_loss, target, hold in product(
 results_df = pd.DataFrame(results)
 
 results_df = results_df.sort_values(
-    by=['total_profit', 'total_trades'],
+    by=['total_profit', 'win_rate'],
     ascending=False
 )
 
-print("\n🏆 TOP 10 BACKTEST SETTINGS")
-print(results_df.head(10).to_string(index=False))
+print("\n🏆 TOP 10 RECENT MARKET SETTINGS")
 
-results_df.to_csv('data/processed/backtest_optimization_results.csv', index=False)
+print(
+    results_df.head(10).to_string(index=False)
+)
+
+# ======================
+# SAVE
+# ======================
+results_df.to_csv(
+    'data/processed/backtest_optimization_results.csv',
+    index=False
+)
 
 print("\n✅ Optimization complete")
-print("Saved results to data/processed/backtest_optimization_results.csv")
+
+print(
+    "Saved results to "
+    "data/processed/backtest_optimization_results.csv"
+)

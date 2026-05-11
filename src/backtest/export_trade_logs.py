@@ -20,13 +20,6 @@ features = [
     'atr_pct', 'above_vwap', 'high_volume', 'uptrend', 'market_regime'
 ]
 
-missing_features = [f for f in features if f not in df.columns]
-
-if missing_features:
-    print("❌ Missing features:", missing_features)
-    print("👉 First run: python3 src/features/build_features.py")
-    exit()
-
 X = df[features]
 y = df['target']
 
@@ -34,9 +27,7 @@ split_index = int(len(df) * 0.8)
 
 X_train = X.iloc[:split_index]
 X_test = X.iloc[split_index:]
-
 y_train = y.iloc[:split_index]
-y_test = y.iloc[split_index:]
 
 df_test = df.iloc[split_index:].copy().reset_index(drop=True)
 
@@ -54,21 +45,14 @@ model.fit(X_train, y_train)
 proba = model.predict_proba(X_test)
 df_test['confidence'] = proba[:, 1]
 
-print("\n🔍 Confidence Summary:")
-print(df_test['confidence'].describe())
-
 confidence_threshold = 0.50
 stop_loss_pct = 0.0025
 target_pct = 0.007
 hold_candles = 45
-
-initial_balance = 100000
-balance = initial_balance
-
 capital_per_trade = 100000
 brokerage_pct = 0.00005
 
-trades = []
+trade_logs = []
 
 for i in range(len(df_test) - hold_candles):
     row = df_test.iloc[i]
@@ -109,43 +93,31 @@ for i in range(len(df_test) - hold_candles):
         brokerage = (buy_value + sell_value) * brokerage_pct
         net_profit = gross_profit - brokerage
 
-        balance += net_profit
-
-        trades.append({
-            "entry": entry_price,
-            "exit": exit_price,
-            "quantity": quantity,
-            "confidence": row['confidence'],
-            "gross_profit": gross_profit,
-            "brokerage": brokerage,
-            "net_profit": net_profit,
-            "exit_reason": exit_reason
+        trade_logs.append({
+            'date': row['date'],
+            'stock': row['stock'],
+            'entry_price': round(entry_price, 2),
+            'exit_price': round(exit_price, 2),
+            'quantity': quantity,
+            'confidence': round(row['confidence'], 4),
+            'gross_profit': round(gross_profit, 2),
+            'brokerage': round(brokerage, 2),
+            'net_profit': round(net_profit, 2),
+            'exit_reason': exit_reason
         })
 
-trades_df = pd.DataFrame(trades)
-total_trades = len(trades_df)
+trade_logs_df = pd.DataFrame(trade_logs)
 
-if total_trades == 0:
-    print("❌ No trades found.")
-else:
-    wins = len(trades_df[trades_df['net_profit'] > 0])
-    losses = len(trades_df[trades_df['net_profit'] <= 0])
+trade_logs_df.to_csv('trade_logs/trade_logs.csv', index=False)
 
-    win_rate = (wins / total_trades) * 100
-    total_profit = trades_df['net_profit'].sum()
+print("\n✅ Trade logs exported")
+print("Total Trades:", len(trade_logs_df))
 
-    print("\n📊 REALISTIC BACKTEST RESULT")
-    print("Initial Balance:", initial_balance)
-    print("Final Balance:", round(balance, 2))
-    print("Total Net Profit:", round(total_profit, 2))
-    print("Total Trades:", total_trades)
-    print("Wins:", wins)
-    print("Losses:", losses)
-    print("Win Rate:", round(win_rate, 2), "%")
-
+if len(trade_logs_df) > 0:
+    print("Total Net Profit:", round(trade_logs_df['net_profit'].sum(), 2))
+    print("Win Rate:", round((trade_logs_df['net_profit'] > 0).mean() * 100, 2), "%")
     print("\nExit Reasons:")
-    print(trades_df['exit_reason'].value_counts())
+    print(trade_logs_df['exit_reason'].value_counts())
 
-    print("\nAverage Net Profit Per Trade:", round(trades_df['net_profit'].mean(), 2))
-    print("Average Gross Profit Per Trade:", round(trades_df['gross_profit'].mean(), 2))
-    print("Average Brokerage Per Trade:", round(trades_df['brokerage'].mean(), 2))
+print("\n📁 Saved:")
+print("trade_logs/trade_logs.csv")

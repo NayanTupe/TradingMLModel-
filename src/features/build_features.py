@@ -88,6 +88,35 @@ df['trend_strength'] = np.where(
 )
 
 # ======================
+# MARKET REGIME FILTERS
+# ======================
+
+# ATR percentage
+df['atr_pct'] = np.where(
+    df['close'] != 0,
+    df['atr'] / df['close'],
+    0
+)
+
+# Price above VWAP
+df['above_vwap'] = (df['close'] > df['vwap']).astype(int)
+
+# Volume confirmation
+df['high_volume'] = (df['volume_spike'] > 1.2).astype(int)
+
+# Trend direction
+df['uptrend'] = (df['ma_10'] > df['ma_20']).astype(int)
+
+# Trade allowed only in good market condition
+df['market_regime'] = (
+    (
+        (df['above_vwap'] == 1) |
+        (df['uptrend'] == 1)
+    ) &
+    (df['atr_pct'] > 0.0005)
+).astype(int)
+
+# ======================
 # PREVIOUS DAY HIGH / LOW
 # ======================
 df['day'] = df['date'].dt.date
