@@ -2,17 +2,26 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 
+# ======================
+# LOAD DATA
+# ======================
 df = pd.read_csv('data/processed/features.csv')
 df = df.tail(100000).reset_index(drop=True)
 
 df = df.replace([np.inf, -np.inf], 0)
 df = df.fillna(0)
 
+# ======================
+# REMOVE LEAKAGE
+# ======================
 leakage_cols = ['future_close', 'future_high', 'future_low']
 for col in leakage_cols:
     if col in df.columns:
         df = df.drop(columns=[col])
 
+# ======================
+# FEATURES
+# ======================
 features = [
     'ma_10', 'ma_20', 'rsi', 'price_change', 'volatility', 'momentum',
     'vwap', 'atr', 'volume_spike', 'candle_body_pct', 'trend_strength',
@@ -20,26 +29,19 @@ features = [
     'atr_pct', 'above_vwap', 'high_volume', 'uptrend', 'market_regime'
 ]
 
-missing_features = [f for f in features if f not in df.columns]
-
-if missing_features:
-    print("❌ Missing features:", missing_features)
-    print("👉 First run: python3 src/features/build_features.py")
-    exit()
-
 X = df[features]
 y = df['target']
 
 split_index = int(len(df) * 0.8)
-
 X_train = X.iloc[:split_index]
 X_test = X.iloc[split_index:]
-
 y_train = y.iloc[:split_index]
 y_test = y.iloc[split_index:]
-
 df_test = df.iloc[split_index:].copy().reset_index(drop=True)
 
+# ======================
+# MODEL
+# ======================
 model = RandomForestClassifier(
     n_estimators=300,
     max_depth=12,
@@ -51,32 +53,34 @@ model = RandomForestClassifier(
 
 model.fit(X_train, y_train)
 
-proba = model.predict_proba(X_test)
-df_test['confidence'] = proba[:, 1]
+# ======================
+# PREDICTION
+# ======================
+df_test['confidence'] = model.predict_proba(X_test)[:, 1]
 
-print("\n🔍 Confidence Summary:")
-print(df_test['confidence'].describe())
-
+# ======================
+# BACKTEST SETTINGS
+# ======================
 confidence_threshold = 0.50
 stop_loss_pct = 0.0025
 target_pct = 0.007
 hold_candles = 45
-
-initial_balance = 100000
-balance = initial_balance
-
 capital_per_trade = 100000
 brokerage_pct = 0.00005
 
 trades = []
 
+# ======================
+# BACKTEST LOGIC WITH RISK MANAGEMENT
+# ======================
 for i in range(len(df_test) - hold_candles):
     row = df_test.iloc[i]
 
     if row['confidence'] >= confidence_threshold and row['market_regime'] == 1:
         entry_price = row['close']
-        quantity = int(capital_per_trade / entry_price)
 
+        # Dynamic position sizing based on capital
+        quantity = int(capital_per_trade / entry_price)
         if quantity <= 0:
             continue
 
@@ -85,7 +89,6 @@ for i in range(len(df_test) - hold_candles):
 
         exit_price = None
         exit_reason = "time_exit"
-
         future_rows = df_test.iloc[i + 1:i + hold_candles + 1]
 
         for _, future in future_rows.iterrows():
@@ -93,7 +96,6 @@ for i in range(len(df_test) - hold_candles):
                 exit_price = stop_loss_price
                 exit_reason = "stop_loss"
                 break
-
             if future['high'] >= target_price:
                 exit_price = target_price
                 exit_reason = "target"
@@ -104,12 +106,9 @@ for i in range(len(df_test) - hold_candles):
 
         buy_value = entry_price * quantity
         sell_value = exit_price * quantity
-
         gross_profit = sell_value - buy_value
         brokerage = (buy_value + sell_value) * brokerage_pct
         net_profit = gross_profit - brokerage
-
-        balance += net_profit
 
         trades.append({
             "entry": entry_price,
@@ -122,6 +121,9 @@ for i in range(len(df_test) - hold_candles):
             "exit_reason": exit_reason
         })
 
+# ======================
+# RESULTS
+# ======================
 trades_df = pd.DataFrame(trades)
 total_trades = len(trades_df)
 
@@ -130,13 +132,12 @@ if total_trades == 0:
 else:
     wins = len(trades_df[trades_df['net_profit'] > 0])
     losses = len(trades_df[trades_df['net_profit'] <= 0])
-
     win_rate = (wins / total_trades) * 100
     total_profit = trades_df['net_profit'].sum()
 
-    print("\n📊 REALISTIC BACKTEST RESULT")
-    print("Initial Balance:", initial_balance)
-    print("Final Balance:", round(balance, 2))
+    print("\n📊 BACKTEST RESULT")
+    print("Initial Balance:", 100000)
+    print("Final Balance:", round(100000 + total_profit, 2))
     print("Total Net Profit:", round(total_profit, 2))
     print("Total Trades:", total_trades)
     print("Wins:", wins)

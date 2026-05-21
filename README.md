@@ -116,4 +116,33 @@ Settings:
 - Walk-forward testing
 - Leakage analysis
 - Bad fold analysis
-- Backtest optimization
+- Backtest optimization 
+
+
+
+## **Project Structure**
+
+```text
+Trading-System/
+├─ src/
+│  ├─ features/
+│  │  └─ build_features.py
+│  ├─ backtest/
+│  │  ├─ backtest.py
+│  │  ├─ export_trade_logs.py
+│  │  ├─ performance_dashboard.py
+│  │  ├─ walk_forward_test.py
+│  ├─ models/
+│  │  ├─ train_model.py
+│  │  ├─ load_saved_model.py
+│  ├─ api/
+│  │  └─ trading_api.py
+│  └─ paper_trading_simulator.py
+├─ data/
+│  ├─ raw/
+│  ├─ processed/
+├─ trade_logs/
+├─ saved_models/
+├─ results/
+├─ README.md
+└─ .gitignore
