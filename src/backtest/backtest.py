@@ -71,24 +71,22 @@ brokerage_pct = 0.00005
 trades = []
 
 # ======================
-# BACKTEST LOGIC WITH RISK MANAGEMENT
+# BACKTEST LOGIC
 # ======================
 for i in range(len(df_test) - hold_candles):
     row = df_test.iloc[i]
 
     if row['confidence'] >= confidence_threshold and row['market_regime'] == 1:
         entry_price = row['close']
-
-        # Dynamic position sizing based on capital
         quantity = int(capital_per_trade / entry_price)
         if quantity <= 0:
             continue
 
         stop_loss_price = entry_price * (1 - stop_loss_pct)
         target_price = entry_price * (1 + target_pct)
-
         exit_price = None
         exit_reason = "time_exit"
+
         future_rows = df_test.iloc[i + 1:i + hold_candles + 1]
 
         for _, future in future_rows.iterrows():

@@ -7,18 +7,18 @@ This report summarizes the performance of the machine learning based trading str
 
 ## Key Metrics
 
-- Total Trades: 468
-- Total Net Profit: 2976.6
-- Average Profit Per Trade: 6.36
-- Winning Trades: 154
-- Losing Trades: 314
-- Win Rate: 32.91%
-- Best Trade: 689.21
-- Worst Trade: -259.99
-- Final Equity: 2976.6
-- Maximum Drawdown: -15573.59
-- Sharpe Ratio: 0.0167
-- Risk Reward Ratio: 2.12
+- Total Trades: 86
+- Total Net Profit: -7132.42
+- Average Profit Per Trade: -82.94
+- Winning Trades: 20
+- Losing Trades: 66
+- Win Rate: 23.26%
+- Best Trade: 685.28
+- Worst Trade: -259.91
+- Final Equity: -7132.42
+- Maximum Drawdown: -8865.47
+- Sharpe Ratio: -0.2613
+- Risk Reward Ratio: 1.81
 
 ## Strategy Interpretation
 
@@ -29,9 +29,9 @@ This means the strategy focuses on asymmetric reward-risk behavior instead of re
 ## Monthly Performance
 
 month
-2026-01   -10096.12
-2026-02     9437.09
-2026-03     3635.63
+2026-01    -985.19
+2026-02   -6230.79
+2026-03      83.56
 Freq: M
 
 ## Charts Generated
