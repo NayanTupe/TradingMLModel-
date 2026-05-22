@@ -101,7 +101,7 @@ Settings:
 ![Profit Distribution](results/profit_distribution.png)
 
 ### Backtest Result
-![Backtest Result](results/backtest_result.png)
+![Backtest Result](results/backtest_profit_chart.png)
 
 ### Optimization Chart
 ![Optimization Chart](results/backtest_profit_chart.png)
