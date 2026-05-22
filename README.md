@@ -9,7 +9,7 @@
 
 This project requires data files separately from OneDrive.
 
-## Required folder structure
+## Required folder structure.     and The complete folder structure is provided below.
 
 Trading-System/
 ├── data/
@@ -154,4 +154,84 @@ Trading-System/
 ├─ saved_models/
 ├─ results/
 ├─ README.md
-└─ .gitignore
+└─ .gitignore   
+
+
+## ** Many Things Add Project Structure ** 
+
+TRADING-SYSTEM/
+├── main.py
+├── README.md
+├── requirements.txt
+├── configs/
+│   └── .gitkeep
+├── data/
+│   ├── processed/
+│   │   ├── backtest_optimization_results.csv
+│   │   ├── bad_folds.csv
+│   │   ├── best_folds.csv
+│   │   ├── combined_data.csv
+│   │   ├── features.csv
+│   │   ├── walk_forward_results.csv
+│   │   ├── weak_folds.csv
+│   │   └── worst_folds.csv
+│   └── raw/
+│       ├── options/
+│       │   └── option_data.csv
+│       └── price/
+│           ├── HDFCBANK_minute.csv
+│           ├── ICICIBANK_minute.csv
+│           ├── INFY_minute.csv
+│           ├── NIFTY50_minute.csv
+│           ├── NIFTYBANK_minute.csv
+│           ├── RELIANCE_minute.csv
+│           └── TCS_minute.csv
+├── notebooks/
+│   └── analysis.ipynb
+├── outputs/
+│   ├── predictions.csv
+│   └── trades.csv
+├── results/
+│   ├── backtest_profit_chart.png
+│   ├── drawdown_curve.png
+│   ├── equity_curve.png
+│   ├── model_predictions.csv
+│   ├── monthly_profit_chart.png
+│   ├── performance_equity_curve.png
+│   ├── profit_distribution.png
+│   └── quant_performance_report.md
+├── saved_models/
+│   └── model_features.txt
+├── src/
+│   ├── api/
+│   │   └── trading_api.py
+│   ├── backtest/
+│   │   ├── analyze_bad_folds.py
+│   │   ├── backtest.py
+│   │   ├── equity_curve.py
+│   │   ├── export_trade_logs.py
+│   │   ├── generate_report.py
+│   │   ├── leakage_check.py
+│   │   ├── live_signal_monitor.py
+│   │   ├── optimize_backtest.py
+│   │   ├── paper_trading_simulator.py
+│   │   ├── performance_dashboard.py
+│   │   ├── plot_results.py
+│   │   └── walk_forward_test.py
+│   ├── data/
+│   │   ├── load_data.py
+│   │   └── merge_data.py
+│   ├── features/
+│   │   └── build_features.py
+│   ├── models/
+│   │   ├── load_saved_model.py
+│   │   ├── predict.py
+│   │   └── train_model.py
+│   ├── strategy/
+│   │   └── strategy.py
+│   └── utils/
+│       └── helpers.py
+└── trade_logs/
+    ├── live_trade_monitor_logs.csv
+    ├── paper_trading_signals.csv
+    └── trade_logs.csv
