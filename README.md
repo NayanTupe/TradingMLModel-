@@ -91,6 +91,15 @@ Settings:
 
 ## Screenshots
 
+### Equity Curve
+![Equity Curve](results/performance_equity_curve.png)
+
+### Monthly Profit
+![Monthly Profit](results/monthly_profit_chart.png)
+
+### Profit Distribution
+![Profit Distribution](results/profit_distribution.png)
+
 ### Backtest Result
 ![Backtest Result](results/backtest_result.png)
 
