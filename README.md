@@ -237,38 +237,46 @@ TRADING-SYSTEM/
     └── trade_logs.csv
 
 
-    Sample Output
-Metric	Value
-Total Trades	5877
-Net Profit	4,049,492.79
-Average Profit Per Trade	689.04
-Winning Trades	5877
-Losing Trades	0
-Win Rate	100.0%
-Best Trade	689.96
-Worst Trade	688.11
-Maximum Drawdown	0.0
+ Full Backtest Analysis
 
 
-Charts
-Equity Curve: results/full_backtest_equity_curve.png
-Monthly Profit: results/full_backtest_monthly_profit.png
-Profit Distribution: results/full_backtest_profit_distribution.png
+Backtest Overview
+Total Trades: 5,877
+Net Profit: 4,049,492.79
+Winning Trades: 5,877
+Losing Trades: 0
+Win Rate: 100%
+Average Profit per Trade: 689.04
+
+Trade Stats
+Best Trade: 689.96
+Worst Trade: 688.11
+Final Equity: 4,049,492.79
+Maximum Drawdown: 0.0
+
+Settings
+Confidence Threshold: 0.50
+Stop Loss: 0.25%
+Target: 0.70%
+Hold Candles: 45
+Capital per Trade: 100,000
+Brokerage: 0.005%
 
 
-Market Regime Distribution:
-1    6569
-0    3431
+How to Reproduce
 
-Confidence Stats:
-count    10000.000
-mean         0.4389
-std          0.0706
-min          0.2122
-25%          0.3893
-50%          0.4368
-75%          0.4870
-max          0.6892
+Generate Features:
 
+python3 src/features/build_features.py
 
-The full backtest integrates model predictions with features and executes simulated trades using the defined risk management rules. This is useful for testing, evaluation, and future live deployment.
+Train Model:
+
+python3 src/models/train_model.py
+
+Run Full Backtest Pipeline:
+
+python3 src/backtest/full_backtest_pipeline.py
+
+Analyze Trades and Generate Charts:
+
+python3 src/backtest/analyze_backtest.py
