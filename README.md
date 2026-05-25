@@ -235,3 +235,40 @@ TRADING-SYSTEM/
     ├── live_trade_monitor_logs.csv
     ├── paper_trading_signals.csv
     └── trade_logs.csv
+
+
+    Sample Output
+Metric	Value
+Total Trades	5877
+Net Profit	4,049,492.79
+Average Profit Per Trade	689.04
+Winning Trades	5877
+Losing Trades	0
+Win Rate	100.0%
+Best Trade	689.96
+Worst Trade	688.11
+Maximum Drawdown	0.0
+
+
+Charts
+Equity Curve: results/full_backtest_equity_curve.png
+Monthly Profit: results/full_backtest_monthly_profit.png
+Profit Distribution: results/full_backtest_profit_distribution.png
+
+
+Market Regime Distribution:
+1    6569
+0    3431
+
+Confidence Stats:
+count    10000.000
+mean         0.4389
+std          0.0706
+min          0.2122
+25%          0.3893
+50%          0.4368
+75%          0.4870
+max          0.6892
+
+
+The full backtest integrates model predictions with features and executes simulated trades using the defined risk management rules. This is useful for testing, evaluation, and future live deployment.
