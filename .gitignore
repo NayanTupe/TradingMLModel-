@@ -2,3 +2,36 @@ data/
 *.csv
 .DS_Store
 saved_models/*.pkl
+Trading-system-dashboard/
+
+# React dashboard duplicate files in backend root.
+# The real dashboard repo lives in Trading-system-dashboard/.
+/index.html
+/package.json
+/package-lock.json
+/vite.config.js
+/src/App.jsx
+/src/main.jsx
+/src/styles.css
+/src/components/
+/src/constants/
+/src/data/rawData.js
+/src/hooks/
+/src/layout/
+/src/pages/
+/src/theme/
+/src/utils/*.js
+
+node_modules/
+dist/
+.env
+.DS_Store
+
+venv/
+trading_env/
+node_modules/
+dist/
+.DS_Store
+__pycache__/
+*.pyc
+.env
