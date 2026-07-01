@@ -1,37 +1,48 @@
-data/
-*.csv
+# OS / editor
 .DS_Store
-saved_models/*.pkl
-Trading-system-dashboard/
+.vscode/
+.idea/
 
-# React dashboard duplicate files in backend root.
-# The real dashboard repo lives in Trading-system-dashboard/.
-/index.html
-/package.json
-/package-lock.json
-/vite.config.js
-/src/App.jsx
-/src/main.jsx
-/src/styles.css
-/src/components/
-/src/constants/
-/src/data/rawData.js
-/src/hooks/
-/src/layout/
-/src/pages/
-/src/theme/
-/src/utils/*.js
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
-node_modules/
-dist/
-.env
-.DS_Store
-
+# Virtual environments
 venv/
 trading_env/
+.venv/
+
+# Secrets
+.env
+.env.*
+!backend/.env.example
+
+# Local frontend/dashboard workspace is a separate repository.
+Trading-system-dashboard/
+
+# Backend generated/local data
+backend/data/
+backend/outputs/
+backend/results/model_predictions.csv
+backend/saved_models/*.pkl
+backend/trade_logs/*.db
+
+# Node/build artifacts accidentally created at root or backend
 node_modules/
 dist/
-.DS_Store
-__pycache__/
-*.pyc
-.env
+.vite/
+backend/node_modules/
+backend/dist/
+
+# Large/generated CSV data by default
+*.csv
+!backend/trade_logs/.gitkeep
+!backend/trade_logs/full_backtest_trades.csv
+!backend/trade_logs/live_trade_monitor_logs.csv
+!backend/trade_logs/paper_trading_signals.csv
+!backend/trade_logs/trade_logs.csv

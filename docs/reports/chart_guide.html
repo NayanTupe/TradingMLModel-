@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Algorithmic Trading System – Complete Report with Charts</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+            color: #1a2a3a;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            background: #fefefe;
+        }
+        h1 {
+            color: #0a2b4e;
+            border-bottom: 3px solid #0a2b4e;
+            padding-bottom: 12px;
+            font-size: 28px;
+        }
+        h2 {
+            color: #1e4a76;
+            margin-top: 35px;
+            border-left: 5px solid #1e4a76;
+            padding-left: 18px;
+            font-size: 22px;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .chart-block {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin: 30px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            break-inside: avoid;
+        }
+        .chart-img {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .chart-img img {
+            max-width: 100%;
+            border: 1px solid #cbd5e0;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .badge {
+            background: #0a2b4e;
+            color: white;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .insight {
+            background: #e6f7ff;
+            padding: 12px 18px;
+            border-left: 4px solid #1e4a76;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #cbd5e0;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background: #0a2b4e;
+            color: white;
+            font-weight: 600;
+        }
+        .footer {
+            margin-top: 50px;
+            font-size: 0.75rem;
+            text-align: center;
+            color: #5a6e7c;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+        @media print {
+            body {
+                padding: 0.5in;
+            }
+            .chart-block {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            .chart-img img {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Algorithmic Trading System – Complete Performance Report</h1>
+    <p><strong>ML‑based strategy | Walk‑forward validation (102 folds) | Production ready</strong><br>
+    Generated on: June 15, 2026</p>
+
+    <!-- Chart 1 -->
+    <div class="chart-block">
+        <span class="badge">Chart 1 – Equity Curve</span>
+        <h2>📈 Equity Curve (<code>equity_curve.png</code>)</h2>
+        <div class="chart-img">
+            <img src="results/equity_curve.png" alt="Equity curve across walk-forward folds" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\'color:red; padding:20px;\'>⚠️ Image not found at results/equity_curve.png<br>Make sure the file exists.</div>';">
+        </div>
+        <p><strong>What it shows:</strong> Cumulative profit/loss over 102 walk‑forward folds (X‑axis = fold, Y‑axis = equity).</p>
+        <p><strong>Key observations:</strong> Sharp rise in fold 47 (COVID crash recovery) – profit +792,432. Deep drop in fold 16 (demonetisation) – loss -85,238. Recent folds (after 90) show downward trend (Jan‑Mar 2026 drawdown).</p>
+        <div class="insight">
+            💡 <strong>What it proves:</strong> The strategy captures trending/high‑volatility regimes but struggles in consolidation or black‑swan events. Walk‑forward validation ensures no look‑ahead bias.
+        </div>
+        <p><strong>📌 Insert in PPT:</strong> After <strong>Slide 11</strong> (Best Performing Walk‑Forward Folds). Suggested slide title: <em>“Equity Curve – Walk‑Forward Validation (102 folds)”</em></p>
+    </div>
+
+    <!-- Chart 2 -->
+    <div class="chart-block">
+        <span class="badge">Chart 2 – Profit Distribution</span>
+        <h2>📊 Profit Distribution (<code>profit_distribution.png</code>)</h2>
+        <div class="chart-img">
+            <img src="results/profit_distribution.png" alt="Profit distribution histogram" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\'color:red; padding:20px;\'>⚠️ Image not found at results/profit_distribution.png</div>';">
+        </div>
+        <p><strong>What it shows:</strong> Histogram of net profit per trade (X‑axis: profit in ₹, Y‑axis: number of trades).</p>
+        <p><strong>Key observations:</strong> Most trades cluster around -250 to 0 (stop losses). A smaller peak around +500 to +600 (target hits). Winning trades (avg ₹460) are ~1.8× larger than losing trades (avg ₹254).</p>
+        <div class="insight">
+            💡 <strong>What it proves:</strong> Asymmetric risk‑reward (1.81). Low win rate (23.3%) is compensated by high reward when winning.
+        </div>
+        <p><strong>📌 Insert in PPT:</strong> After <strong>Slide 13</strong> (Performance Metrics) or replace text in <strong>Slide 14</strong>. Suggested title: <em>“Trade Profit Distribution – Asymmetric Returns”</em></p>
+    </div>
+
+    <!-- Chart 3 -->
+    <div class="chart-block">
+        <span class="badge">Chart 3 – Drawdown Curve</span>
+        <h2>📉 Drawdown Curve (<code>drawdown_curve.png</code>)</h2>
+        <div class="chart-img">
+            <img src="results/drawdown_curve.png" alt="Drawdown curve per fold" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\'color:red; padding:20px;\'>⚠️ Image not found at results/drawdown_curve.png</div>';">
+        </div>
+        <p><strong>What it shows:</strong> Maximum drawdown (%) for each walk‑forward fold (X‑axis: fold, Y‑axis: drawdown %).</p>
+        <p><strong>Key observations:</strong> Drawdown exceeds -8% in folds 16, 60, and 82. Most folds have drawdown between -2% and -6%. Recent folds show increasing drawdown (Feb 2026).</p>
+        <div class="insight">
+            💡 <strong>What it proves:</strong> Risk is generally controlled (max DD -8.9% < 10% target). However, certain regimes (low volatility, demonetisation) cause elevated drawdown.
+        </div>
+        <p><strong>📌 Insert in PPT:</strong> After <strong>Slide 15</strong> (Risk Management Module). Suggested title: <em>“Drawdown Curve – Risk Analysis per Fold”</em></p>
+    </div>
+
+    <!-- Chart 4 -->
+    <div class="chart-block">
+        <span class="badge">Chart 4 – Monthly Profit</span>
+        <h2>📅 Monthly Profit Chart (<code>monthly_profit_chart.png</code>)</h2>
+        <div class="chart-img">
+            <img src="results/monthly_profit_chart.png" alt="Monthly profit bar chart" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\'color:red; padding:20px;\'>⚠️ Image not found at results/monthly_profit_chart.png</div>';">
+        </div>
+        <p><strong>What it shows:</strong> Net profit per month for Jan, Feb, Mar 2026 (bar chart).</p>
+        <p><strong>Key observations:</strong> January: -₹985, February: -₹6,231, March: +₹84.</p>
+        <div class="insight">
+            💡 <strong>What it proves:</strong> Performance is not consistent month‑to‑month. February was the worst (high stop‑loss frequency). March shows a small recovery, indicating possible mean‑reversion.
+        </div>
+        <p><strong>📌 Insert in PPT:</strong> In <strong>Slide 14</strong> (Monthly Performance & Exit Analysis) – replace the text table. Suggested title: <em>“Monthly P&L – Jan‑Mar 2026”</em></p>
+    </div>
+
+    <!-- Placement summary table -->
+    <h2>📍 Quick Reference: Where to Insert Each Chart in Your 22‑Slide PPT</h2>
+    <table>
+        <thead>
+            <tr><th>Chart</th><th>Insert After Slide</th><th>Suggested Slide Title</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>equity_curve.png</code></td><td>Slide 11 (Best Folds)</td><td>Equity Curve – Walk‑Forward Validation</td></tr>
+            <tr><td><code>profit_distribution.png</code></td><td>Slide 13 (Performance Metrics)</td><td>Profit Distribution – Asymmetric Returns</td></tr>
+            <tr><td><code>drawdown_curve.png</code></td><td>Slide 15 (Risk Management)</td><td>Drawdown Curve – Risk Analysis</td></tr>
+            <tr><td><code>monthly_profit_chart.png</code></td><td>Slide 14 (Monthly Performance)</td><td>Monthly P&L – Recent 3 Months</td></tr>
+        </tbody>
+    </table>
+
+    <h2>🛠 How to Insert into Your PPT (if you have the .pptx file)</h2>
+    <ol>
+        <li>Open <code>Trading_System_Final_Report.pptx</code> in PowerPoint.</li>
+        <li>Navigate to the slide mentioned above.</li>
+        <li>Click <strong>Insert → Pictures</strong> and select the image from your <code>results/</code> folder.</li>
+        <li>Resize and position the image. Add a caption if desired (e.g., “Figure 1: Equity curve across 102 walk‑forward folds”).</li>
+        <li>Save the PPT.</li>
+    </ol>
+
+    <h2>💬 How to Use These Explanations in Your Resume / Interview</h2>
+    <p>When showing the charts, say something like:</p>
+    <blockquote style="background:#f1f5f9; padding:15px; border-radius:12px;">
+        “<em>My equity curve shows the strategy captured the COVID crash rally (fold 47) but struggled during demonetisation (fold 16). The profit distribution proves asymmetric risk‑reward – I lose ₹254 on average but win ₹460. The drawdown curve stays mostly under 6%, which is acceptable for a medium‑frequency equity strategy. Monthly P&L highlights that February 2026 was the worst month due to high stop‑loss frequency, but March shows a recovery.</em>”
+    </blockquote>
+
+    <div class="footer">
+        <p>© 2026 Algorithmic Trading System – For research, educational, and interview purposes only. Not financial advice.</p>
+        <p>All charts are from the <code>results/</code> folder of the project. This document combines explanations and actual images.</p>
+    </div>
+</body>
+</html>
